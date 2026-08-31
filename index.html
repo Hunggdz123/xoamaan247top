@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico" />
+    <title>Xóa mã ẩn tài khoản | FIXMAAN.NET</title>
+    <meta
+      name="description"
+      content="Xóa mã ẩn mà nhà cái đã cài vào tài khoản, giúp bạn không còn bị theo dõi chu trình nạp cược. Kiểm tra và bóc tách mã độc, bảo vệ tài khoản cờ bạc mạng."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://fixmaan.net/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:url" content="https://fixmaan.net/" />
+    <meta property="og:site_name" content="XOAMAAN" />
+    <meta
+      property="og:title"
+      content="Xóa mã ẩn tài khoản | FIXMAAN.NET"
+    />
+    <meta
+      property="og:description"
+      content="Xóa mã ẩn mà nhà cái đã cài vào tài khoản, giúp bạn không còn bị theo dõi chu trình nạp cược."
+    />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Xóa mã ẩn tài khoản | FIXMAAN.NET" />
+    <meta
+      name="twitter:description"
+      content="Xóa mã ẩn mà nhà cái đã cài vào tài khoản, giúp bạn không còn bị theo dõi chu trình nạp cược."
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "FIXMAAN.NET",
+        "url": "https://fixmaan.net/",
+        "description": "Hệ thống kiểm tra và xóa mã ẩn khỏi tài khoản, tránh theo dõi từ nhà cái.",
+        "inLanguage": "vi"
+      }
+    </script>
+    <script type="module" crossorigin src="main.js"></script>
+    <link rel="stylesheet" crossorigin href="style.css">
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <div id="local-code-modal" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;">
+      <div id="local-code-backdrop" style="position:fixed;inset:0;background:rgba(0,0,0,.5);"></div>
+      <div style="position:relative;max-width:720px;width:min(92%,720px);margin:auto;background:#fff;border-radius:8px;padding:16px;z-index:10000;box-shadow:0 10px 30px rgba(0,0,0,.25);">
+        <button id="local-code-close" aria-label="Đóng" style="position:absolute;right:8px;top:8px;border:0;background:transparent;font-size:18px;">✕</button>
+        <h3 style="margin:0 0 8px 0;font-size:1.1rem">Mã / Code</h3>
+        <p id="local-code-note" style="margin:0 0 8px 0;color:#444;font-size:.95rem">Dán mã ở đây hoặc sao chép nếu đã có sẵn.</p>
+        <textarea id="local-code-text" style="width:100%;height:160px;border:1px solid #ddd;padding:8px;border-radius:6px;font-family:inherit;resize:vertical"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end">
+          <button id="local-code-copy" style="padding:8px 12px;background:#06b6d4;border:0;color:#fff;border-radius:6px;cursor:pointer">Sao chép</button>
+          <button id="local-code-open" style="padding:8px 12px;background:#f3f4f6;border:0;color:#111;border-radius:6px;cursor:pointer">Đóng</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        const modal = document.getElementById('local-code-modal');
+        const textarea = document.getElementById('local-code-text');
+        const note = document.getElementById('local-code-note');
+        const btnClose = document.getElementById('local-code-close');
+        const btnCopy = document.getElementById('local-code-copy');
+        const btnOpen = document.getElementById('local-code-open');
+        let currentHref = null;
+
+        function showModal(initial, href){
+          textarea.value = initial || '';
+          note.textContent = href ? 'Mã / code nội bộ: ' + href : 'Dán mã ở đây.';
+          currentHref = href || null;
+          modal.style.display = 'flex';
+        }
+        function hideModal(){ modal.style.display = 'none'; currentHref = null; }
+
+        document.addEventListener('click', function(e){
+          if(e.target && e.target.closest && e.target.closest('#local-code-modal')) return;
+          const el = e.target.closest && e.target.closest('a, button');
+          if(!el) return;
+          if((el.dataset && el.dataset.getCode !== undefined) || el.classList.contains('get-code')){
+            e.preventDefault();
+            const code = el.dataset && el.dataset.code ? el.dataset.code : '';
+            showModal(code, el.href && el.tagName.toLowerCase() === 'a' ? el.href : null);
+            return;
+          }
+          if(el.tagName && el.tagName.toLowerCase() === 'a' && el.href){
+            try{
+              const url = new URL(el.href, location.href);
+              if(url.origin !== location.origin){
+                // External URLs (Telegram/register/native landing pages) must be
+                // handled by the browser. Do not show code popup on them.
+                return;
+              }
+            }catch(err){/* ignore invalid url */}
+          }
+        }, true);
+
+        btnClose.addEventListener('click', hideModal);
+        document.getElementById('local-code-backdrop').addEventListener('click', hideModal);
+        btnCopy.addEventListener('click', function(){
+          const txt = textarea.value;
+          if(navigator.clipboard && window.isSecureContext){
+            navigator.clipboard.writeText(txt).then(()=>{
+              btnCopy.textContent = 'Đã sao chép';
+              setTimeout(()=>btnCopy.textContent = 'Sao chép',1200);
+            }).catch(()=>{
+              textarea.focus();
+              textarea.select();
+              const ok = document.execCommand('copy');
+              if(ok){
+                btnCopy.textContent = 'Đã sao chép';
+                setTimeout(()=>btnCopy.textContent = 'Sao chép',1200);
+              } else {
+                alert('Không thể sao chép');
+              }
+            });
+          } else {
+            textarea.focus();
+            textarea.select();
+            const ok = document.execCommand('copy');
+            if(ok){
+              btnCopy.textContent = 'Đã sao chép';
+              setTimeout(()=>btnCopy.textContent = 'Sao chép',1200);
+            } else {
+              alert('Không thể sao chép');
+            }
+          }
+        });
+        btnOpen.addEventListener('click', hideModal);
+      })();
+    </script>
+</body>
+</html>
