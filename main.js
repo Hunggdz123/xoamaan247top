@@ -63462,7 +63462,7 @@ function QU({now: e}) {
                 className: `flex items-center gap-3 shrink-0 pt-1`,
                 children: [(0,
                 Q.jsx)(`a`, {
-                    href: `https://t.me/rjnzcoder`,
+                    href: `https://t.me/hongductoolhu`,
                     target: `_blank`,
                     rel: `noopener noreferrer`,
                     className: `p-2.5 rounded-xl border border-[rgba(45,212,191,0.35)] bg-[rgba(45,212,191,0.08)] text-[var(--accent-bright)] hover:bg-[rgba(45,212,191,0.16)] transition-colors`,
@@ -66802,7 +66802,7 @@ function mJ() {
                 }), y ? `Đang gửi mã xác thực...` : `Chạy xoá mã ẩn`]
             }), (0,
             Q.jsx)(`a`, {
-                href: `https://t.me/rjnzcoder`,
+                href: `https://t.me/hongductoolhu`,
                 target: `_blank`,
                 rel: `noopener noreferrer`,
                 className: `btn-ghost`,
